@@ -85,6 +85,27 @@ function run(): void
         assertTrue($detail->getClientReferenceId() === $orderId, 'client_reference_id mismatch');
     });
 
+    $runner->run('invoiceList', function () use ($client, $orderId): void {
+        $list = $client->invoiceList([
+            'client_reference_id' => $orderId,
+            'limit' => 20,
+            'offset' => 0,
+            'sort_by' => 'created_at',
+            'sort_order' => 'desc',
+        ]);
+        assertTrue($list->isSuccess() === true, 'invoiceList isSuccess=false');
+        assertTrue($list->getTotal() >= 1, 'invoiceList total must be >= 1');
+        assertTrue(count($list->getItems()) > 0, 'invoiceList returned empty list');
+        $matched = false;
+        foreach ($list->getItems() as $item) {
+            if ($item->getClientReferenceId() === $orderId) {
+                $matched = true;
+                break;
+            }
+        }
+        assertTrue($matched, 'invoiceList missing created invoice');
+    });
+
     $runner->run('invoiceSearch', function () use ($client, $orderId): void {
         $list = $client->invoiceSearch($orderId);
         assertTrue($list->isSuccess() === true, 'invoiceSearch isSuccess=false');
