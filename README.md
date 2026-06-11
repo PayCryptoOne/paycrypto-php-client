@@ -76,6 +76,23 @@ $detail->getStatus();
 $detail->getFinalAmount();
 ```
 
+### Список инвойсов — `invoices` (GET)
+
+```php
+$list = $client->invoiceList([
+    'status' => 'paid_all',
+    'client_reference_id' => 'order',
+    'created_at_from' => 1700000000,
+    'created_at_to' => 1700003600,
+    'sort_by' => 'created_at',
+    'sort_order' => 'desc',
+    'limit' => 20,
+    'offset' => 0,
+]);
+$items = $list->getItems();
+$total = $list->getTotal();
+```
+
 ### Поиск инвойсов — `invoice?query=` (GET)
 
 ```php
